@@ -12,10 +12,10 @@
 
 // 默认配置常量
 static const size_t DEFAULT_THREAD_NUM = std::thread::hardware_concurrency(); // 默认线程数量
-static const size_t MAX_THREAD_LIMIT = 1000;                                  // 最大线程数量限制
-static const size_t MAX_TASK_DEFAULT_NUM = 10000;                             // 默认任务队列最大长度
-static const std::chrono::seconds MAX_IDLE_TIME = std::chrono::seconds(60);   // 线程最大空闲时间
-static const std::chrono::seconds SUBMIT_TIME = std::chrono::seconds(1);      // 任务提交最大等待时间
+static constexpr size_t MAX_THREAD_LIMIT = 1000;                                  // 最大线程数量限制
+static constexpr size_t MAX_TASK_DEFAULT_NUM = 10000;                             // 默认任务队列最大长度
+static constexpr std::chrono::seconds MAX_IDLE_TIME = std::chrono::seconds(60);   // 线程最大空闲时间
+static constexpr std::chrono::seconds SUBMIT_TIME = std::chrono::seconds(1);      // 任务提交最大等待时间
 
 // 类型定义
 using Task = std::function<void()>; // 任务类型
