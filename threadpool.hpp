@@ -13,7 +13,7 @@
 // 默认配置常量
 static const size_t DEFAULT_THREAD_NUM = std::thread::hardware_concurrency(); // 默认线程数量
 static const size_t MAX_THREAD_LIMIT = 1000;                                  // 最大线程数量限制
-static const size_t MAX_TASK_DEFAULT_NUM = 10000;                            // 默认任务队列最大长度
+static const size_t MAX_TASK_DEFAULT_NUM = 10000;                             // 默认任务队列最大长度
 static const std::chrono::seconds MAX_IDLE_TIME = std::chrono::seconds(60);   // 线程最大空闲时间
 static const std::chrono::seconds SUBMIT_TIME = std::chrono::seconds(1);      // 任务提交最大等待时间
 
@@ -256,6 +256,10 @@ public:
         _maxThreadNums = newMaxThreadNums; // 更新最大线程数
     }
 
+private:
+    // 构造函数，初始化线程池
+    ThreadPool() = default;
+
     // 清理单例资源
     ~ThreadPool()
     {
@@ -275,10 +279,6 @@ public:
             iter->second->join();
         }
     }
-
-private:
-    // 构造函数，初始化线程池
-    ThreadPool() = default;
 
     // 执行任务
     void excuteTask()
@@ -421,6 +421,7 @@ private:
     std::unordered_map<ThreadId, std::unique_ptr<ExcuteThread>> _excuteThreads; // 存储执行线程信息
     std::unique_ptr<MonitorThread> _monitorThread;                              // 监视空闲线程
     std::queue<ThreadId> _timeOutQueue;                                         // 超时线程队列
-    static std::unique_ptr<ThreadPool> _instance;                               // 线程池单例
+    static std::unique_ptr<ThreadPool, void (*)(ThreadPool *)> _instance;       // 线程池单例
 };
-std::unique_ptr<ThreadPool> ThreadPool::_instance = nullptr;
+std::unique_ptr<ThreadPool, void (*)(ThreadPool *)> ThreadPool::_instance(nullptr, [](ThreadPool *ptr)
+                                                                          { delete ptr; });
